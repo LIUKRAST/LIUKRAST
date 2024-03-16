@@ -1,1 +1,1 @@
-Hello! Im liukrast! i make minecraft fabric mods and im the leader of a Modding Community... join it!
+Lazy developer and geometry dash player when I'm tired. Main developer & manager at Hemerald

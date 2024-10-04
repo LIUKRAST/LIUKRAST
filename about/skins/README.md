@@ -6,15 +6,15 @@ Hi! I love making skins based on anime characters, here you can find some of the
 *Sakuta from Bunny Girl Senpai*<br>
 ![Mai San](https://s.namemc.com/3d/skin/body.png?id=1eaa6c247a025437&model=slim&width=320&height=160&front_and_back=true)
 *Mai San from Bunny Girl Senpai*<br>
-![Kazuma](https://s.namemc.com/3d/skin/body.png?id=1eaa6c247a025437&model=slim&width=320&height=160&front_and_back=true)
+![Kazuma](https://s.namemc.com/3d/skin/body.png?id=4d266608a469cdbb&model=slim&width=320&height=160&front_and_back=true)
 *Kazuma from KonoSuba*<br>
 ![Darkness](https://s.namemc.com/3d/skin/body.png?id=16d81fd6979fe6f6&model=slim&width=320&height=160&front_and_back=true)
 *Darkness from KonoSuba*<br>
-![Megumin](https://s.namemc.com/3d/skin/body.png?id=1eaa6c247a025437&model=slim&width=320&height=160&front_and_back=true)
+![Megumin](https://s.namemc.com/3d/skin/body.png?id=24b68e23a1bb1672&model=slim&width=320&height=160&front_and_back=true)
 *Megumin from KonoSuba*<br>
-![Aqua](https://s.namemc.com/3d/skin/body.png?id=1eaa6c247a025437&model=slim&width=320&height=160&front_and_back=true)
+![Aqua](https://s.namemc.com/3d/skin/body.png?id=8245c5443807b256&model=slim&width=320&height=160&front_and_back=true)
 *Aqua from KonoSuba*<br>
-![Nezuko](https://s.namemc.com/3d/skin/body.png?id=1eaa6c247a025437&model=slim&width=320&height=160&front_and_back=true)
+![Nezuko](https://s.namemc.com/3d/skin/body.png?id=c522ab6ac235b99f&model=slim&width=320&height=160&front_and_back=true)
 *Nezuko from Demon Slayer*<br>
 ![Otho Ai](https://s.namemc.com/3d/skin/body.png?id=1eaa6c247a025437&model=slim&width=320&height=160&front_and_back=true)
 *Otho Ai from Wonder Egg Priority*<br>

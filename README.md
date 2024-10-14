@@ -3,6 +3,12 @@
 
 Hi! I'm LiukRast and I make minecraft mods/texture packs!
 
+### Languages!
+I currently speak **Italian** and **English**;
+While I'm learning **Japanese**, **Finnish**, **Romanian** and **French**<br>
+I can code in **Java**, **Python**, **GLSL**, **PHP**, **HTML**, **CSS** and **JS**;
+While I'm learning **Ruby**, **Rust**, **C++** and **SQL**.
+
 ## About Mods
 All the public mods I make are always published on
 - [CurseForge](https://www.curseforge.com/members/liukrast/projects)

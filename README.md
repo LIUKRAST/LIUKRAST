@@ -1,5 +1,5 @@
 ![Codewars](https://www.codewars.com/users/LIUKRAST/badges/large)<br>
-<img src="https://frozenblock.net/fb_banner_transparent.png" alt="drawing" width="200"/>
+<img src="https://frozenblock.net/assets/frozenblock/textures/certificate.png" alt="drawing" style="image-rendering: pixelated; width: 300px"/>
 
 Hi! I'm LiukRast and I make minecraft mods/texture packs!
 

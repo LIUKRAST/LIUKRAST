@@ -28,11 +28,9 @@ def discordBroadcast(maven_url):
     name = os.getenv("MOD_NAME")
     version = os.getenv("MOD_VERSION")
     curse_id = os.getenv("CURSE_ID")
-    modrinth_id = os.getenv("MODRINTH_ID")
 
     cf_data = get_cfwidget_data("mc-mods", curse_id)
     cf_icon = cf_data.get("thumbnail", "")
-    cf_url = cf_data.get("urls", {}).get("project", f"https://curseforge.com/minecraft/mc-mods/{curse_id}")
 
     changelog = ""
     if os.path.exists("changelog.md"):
@@ -48,11 +46,11 @@ def discordBroadcast(maven_url):
                 "fields": [
                     {
                         "name": "<:curseforge:1467573317970952332> CurseForge",
-                        "value": f"[Download on CurseForge]({cf_url})"
+                        "value": f"[Download on CurseForge]({os.getenv("CURSEFORGE_URL")})"
                     },
                     {
                         "name": "<:modrinth:1467573288321548485> Modrinth",
-                        "value": f"[Download on Modrinth](https://modrinth.com/mod/{modrinth_id})",
+                        "value": f"[Download on Modrinth](https://modrinth.com/mod/{os.getenv("MODRINTH_URL")})",
                         "inline": True
                     },
                     {

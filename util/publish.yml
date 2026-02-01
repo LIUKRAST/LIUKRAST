@@ -171,7 +171,7 @@ jobs:
           python-version: '3.x'
 
       - name: Install Paramiko
-        run: pip install paramiko
+        run: pip install paramiko requests
 
       # 6. Fetch and Run the Maven Upload Script
       - name: SSH and Upload Maven

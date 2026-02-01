@@ -51,8 +51,7 @@ def discordBroadcast(maven_url):
                     },
                     {
                         "name": "<:modrinth:1467573288321548485> Modrinth",
-                        "value": f"[Download on Modrinth](https://modrinth.com/mod/{os.getenv("MODRINTH_URL")})",
-                        "inline": True
+                        "value": f"[Download on Modrinth]({os.getenv("MODRINTH_URL")})"
                     },
                     {
                         "name": "<:maven:1467633150753505320> Maven",

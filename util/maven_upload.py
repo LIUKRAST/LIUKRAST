@@ -30,7 +30,7 @@ def discordBroadcast(maven_url):
     curse_id = os.getenv("CURSE_ID")
 
     cf_data = get_cfwidget_data("mc-mods", curse_id)
-    cf_url = os.getenv("CURSEFORGE_URL");
+    cf_url = os.getenv("CURSEFORGE_URL")
     cf_icon = cf_data.get("thumbnail", "")
 
     changelog = ""

@@ -73,6 +73,8 @@ jobs:
           
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+          dependencies: ${{ steps.get_props.outputs.dependencies }}
+
       # 5. Setup Python for the Maven Script
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -122,11 +124,17 @@ jobs:
           CURSE_ID=$(grep "curse_id=" gradle.properties | cut -d'=' -f2)
           MODRINTH_ID=$(grep "modrinth_id=" gradle.properties | cut -d'=' -f2)
           ID=$(grep "mod_id=" gradle.properties | cut -d'=' -f2)
+          DEPENDENCIES=$(awk '/^dependencies:/ {f=1; next} /^[^[:space:]]/ {f=0} f {sub(/^  /,""); printf "%s\n",$0}' gradle.properties)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "name=$NAME" >> $GITHUB_OUTPUT
           echo "curse_id=$CURSE_ID" >> $GITHUB_OUTPUT
           echo "modrinth_id=$MODRINTH_ID" >> $GITHUB_OUTPUT
           echo "id=$ID" >> $GITHUB_OUTPUT
+          {
+            echo "dependencies<<EOF"
+            echo "$DEPENDENCIES"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Setup Java
         uses: actions/setup-java@v4

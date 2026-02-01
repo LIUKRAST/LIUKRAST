@@ -1,0 +1,93 @@
+name: Shared Build & Publish
+
+on:
+  workflow_call:
+    secrets:
+      # Mod Portal Tokens
+      MODRINTH_TOKEN:
+        required: true
+      CURSEFORGE_TOKEN:
+        required: true
+      # SSH Credentials for Maven
+      SSH_HOST:
+        required: true
+      SSH_USER:
+        required: true
+      SSH_PASS:
+        required: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      # 1. Checkout the Caller Repository (The Mod)
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Extract Version/Name info
+      - name: Get Properties
+        id: get_props
+        run: |
+          VERSION=$(grep "mod_version=" gradle.properties | cut -d'=' -f2)
+          NAME=$(grep "mod_name=" gradle.properties | cut -d'=' -f2)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "name=$NAME" >> $GITHUB_OUTPUT
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      # 3. Build (for MC-Publish) AND Publish to Local Repo (for Maven Script)
+      # This assumes your build.gradle is configured to publish to file://${project.projectDir}/repo
+      - name: Build and Generate Repo
+        run: ./gradlew build publish
+
+      # 4. Publish to Modrinth & CurseForge
+      - name: Publish to Portals
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          version: ${{ steps.get_props.outputs.version }}
+          name: '[${{ steps.get_props.outputs.version }}] ${{ steps.get_props.outputs.name }}'
+          changelog-file: changelog.md
+          loaders: neoforge
+          game-versions: 1.21.1
+          files: build/libs/!(*-@(dev|sources|javadoc)).jar
+          
+          modrinth-id: uUhZpyjI
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          
+          curseforge-id: 1348982
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+          
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      # 5. Setup Python for the Maven Script
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install Paramiko
+        run: pip install paramiko
+
+      # 6. Fetch and Run the Maven Upload Script
+      - name: SSH and Upload Maven
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PASS: ${{ secrets.SSH_PASS }}
+        run: |
+          # Replace the URL below with the raw link to your python script
+          curl -o publish_maven.py https://raw.githubusercontent.com/LIUKRAST/LIUKRAST/main/util/publish_maven.py
+          
+          python publish_maven.py

@@ -118,7 +118,6 @@ jobs:
           MOD_NAME: ${{ steps.get_props.outputs.name }}
           MOD_VERSION: ${{ steps.get_props.outputs.version }}
           CURSE_ID: ${{ steps.get_props.outputs.curse_id }}
-          MODRINTH_ID: ${{ steps.get_props.outputs.modrinth_id }}
           MOD_ID: ${{ steps.get_props.outputs.id }}
           # Passing these new props to Python just in case your script needs them later
           MC_VERSION: ${{ steps.get_props.outputs.minecraft_version }}

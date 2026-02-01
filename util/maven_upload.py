@@ -55,7 +55,7 @@ def discordBroadcast(maven_url):
                         "inline": True
                     },
                     {
-                        "name": "🔗 Maven",
+                        "name": "<:maven:1467633150753505320> Maven",
                         "value": f"[Find Maven files](https://maven.liukrast.net/{maven_url})"
                     }
                 ],

@@ -50,6 +50,7 @@ jobs:
 
           CURSE_ID=$(prop 'curse_id')
           MODRINTH_ID=$(prop 'modrinth_id')
+          JAVA_VERSION=$(prop 'java_version')
 
           echo "name=$NAME" >> $GITHUB_OUTPUT
           echo "id=$ID" >> $GITHUB_OUTPUT
@@ -58,6 +59,7 @@ jobs:
           echo "mod_loader=$LOADER" >> $GITHUB_OUTPUT
           echo "curse_id=$CURSE_ID" >> $GITHUB_OUTPUT
           echo "modrinth_id=$MODRINTH_ID" >> $GITHUB_OUTPUT
+          echo "java_version=$JAVA_VERSION" >> $GITHUB_OUTPUT
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -75,22 +77,20 @@ jobs:
         run: ./gradlew build publish
 
       - name: Publish to Portals
+        id: publish
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           version: ${{ steps.get_props.outputs.version }}
-          name: '[${{ steps.get_props.outputs.version }}] ${{ steps.get_props.outputs.name }}'
+          name: '${{ steps.get_props.outputs.name }} [${{ steps.get_props.outputs.version }}]'
           changelog-file: changelog.md
           
           # Dynamic values from gradle.properties
           loaders: ${{ steps.get_props.outputs.mod_loader }}
           game-versions: ${{ steps.get_props.outputs.minecraft_version }}
           
-          files: |
-            build/libs/*.jar
-            !build/libs/*-dev.jar
-            !build/libs/*-sources.jar
-            !build/libs/*-javadoc.jar
-            !build/libs/*-all.jar
+          # Specifies which files to upload. Assumes your built jar is in build/libs
+          # and doesn't contain "-dev", "-sources", or "-javadoc".
+          files: build/libs/!(*-@(dev|sources|javadoc)).jar
             
           modrinth-id: ${{ steps.get_props.outputs.modrinth_id }}
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
@@ -99,6 +99,7 @@ jobs:
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
           
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          java: ${{ steps.get_props.outputs.java_version }}
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -122,6 +123,8 @@ jobs:
           # Passing these new props to Python just in case your script needs them later
           MC_VERSION: ${{ steps.get_props.outputs.minecraft_version }}
           LOADER: ${{ steps.get_props.outputs.mod_loader }}
+          CURSEFORGE_URL: ${{ steps.publish.outputs.curseforge-url }}
+          MODRINTH_URL: ${{ steps.publish.outputs.modrinth-url }}
         run: |
           curl -o publish_maven.py https://raw.githubusercontent.com/LIUKRAST/LIUKRAST/main/util/publish_maven.py
           python publish_maven.py

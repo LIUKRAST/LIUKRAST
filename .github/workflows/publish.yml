@@ -1,0 +1,126 @@
+name: Shared Build & Publish
+
+on:
+  workflow_call:
+    inputs:
+      java_version:
+        description: "Java Version"
+        default: '21'
+        required: false
+        type: string
+    secrets:
+      MODRINTH_TOKEN:
+        required: true
+      CURSEFORGE_TOKEN:
+        required: true
+      SSH_HOST:
+        required: true
+      SSH_USER:
+        required: true
+      SSH_PASS:
+        required: true
+      DISCORD_WEBHOOK:
+        required: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get Properties
+        id: get_props
+        run: |
+          # Robust property extraction function
+          function prop {
+              grep "^[[:space:]]*$1" gradle.properties | cut -d'=' -f2- | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'
+          }
+
+          NAME=$(prop 'mod_name')
+          ID=$(prop 'mod_id')
+          VERSION=$(prop 'mod_version')
+          
+          # New Extractions
+          MC_VERSION=$(prop 'minecraft_version')
+          LOADER=$(prop 'mod_loader')
+
+          CURSE_ID=$(prop 'curse_id')
+          MODRINTH_ID=$(prop 'modrinth_id')
+
+          echo "name=$NAME" >> $GITHUB_OUTPUT
+          echo "id=$ID" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "minecraft_version=$MC_VERSION" >> $GITHUB_OUTPUT
+          echo "mod_loader=$LOADER" >> $GITHUB_OUTPUT
+          echo "curse_id=$CURSE_ID" >> $GITHUB_OUTPUT
+          echo "modrinth_id=$MODRINTH_ID" >> $GITHUB_OUTPUT
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ inputs.java_version }}
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Build and Generate Repo
+        run: ./gradlew build publish
+
+      - name: Publish to Portals
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          version: ${{ steps.get_props.outputs.version }}
+          name: '[${{ steps.get_props.outputs.version }}] ${{ steps.get_props.outputs.name }}'
+          changelog-file: changelog.md
+          
+          # Dynamic values from gradle.properties
+          loaders: ${{ steps.get_props.outputs.mod_loader }}
+          game-versions: ${{ steps.get_props.outputs.minecraft_version }}
+          
+          files: |
+            build/libs/*.jar
+            !build/libs/*-dev.jar
+            !build/libs/*-sources.jar
+            !build/libs/*-javadoc.jar
+            !build/libs/*-all.jar
+            
+          modrinth-id: ${{ steps.get_props.outputs.modrinth_id }}
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          
+          curseforge-id: ${{ steps.get_props.outputs.curse_id }}
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+          
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install Python Deps
+        run: pip install paramiko requests
+
+      - name: SSH and Upload Maven
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PASS: ${{ secrets.SSH_PASS }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          MOD_NAME: ${{ steps.get_props.outputs.name }}
+          MOD_VERSION: ${{ steps.get_props.outputs.version }}
+          CURSE_ID: ${{ steps.get_props.outputs.curse_id }}
+          MODRINTH_ID: ${{ steps.get_props.outputs.modrinth_id }}
+          MOD_ID: ${{ steps.get_props.outputs.id }}
+          # Passing these new props to Python just in case your script needs them later
+          MC_VERSION: ${{ steps.get_props.outputs.minecraft_version }}
+          MOD_LOADER: ${{ steps.get_props.outputs.mod_loader }}
+        run: |
+          curl -o publish_maven.py https://raw.githubusercontent.com/LIUKRAST/LIUKRAST/main/util/publish_maven.py
+          python publish_maven.py

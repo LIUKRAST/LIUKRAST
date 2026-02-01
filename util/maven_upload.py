@@ -79,7 +79,7 @@ if not all([host, user, password]):
 
 props = {}
 try:
-    with open("gradle.properties", "r") as f:
+    with open("gradle.properties", "r", encoding="utf-8", errors="ignore") as f:
         for line in f:
             if "=" in line and not line.strip().startswith("#"):
                 key, val = line.strip().split("=", 1)

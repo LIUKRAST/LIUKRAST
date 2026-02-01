@@ -15,6 +15,8 @@ on:
         required: true
       SSH_PASS:
         required: true
+      DISCORD_WEBHOOK:
+        required: true
 
 jobs:
   build-and-deploy:
@@ -86,6 +88,7 @@ jobs:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_PASS: ${{ secrets.SSH_PASS }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
           # Replace the URL below with the raw link to your python script
           curl -o publish_maven.py https://raw.githubusercontent.com/LIUKRAST/LIUKRAST/main/util/publish_maven.py

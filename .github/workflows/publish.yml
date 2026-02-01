@@ -36,8 +36,9 @@ jobs:
         run: |
           # Robust property extraction function
           function prop {
-              grep "^[[:space:]]*$1" gradle.properties | cut -d'=' -f2- | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'
+              grep "^[[:space:]]*$1=" gradle.properties | cut -d'=' -f2- | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'
           }
+
 
           NAME=$(prop 'mod_name')
           ID=$(prop 'mod_id')

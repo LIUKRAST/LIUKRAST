@@ -125,5 +125,5 @@ jobs:
           CURSEFORGE_URL: ${{ steps.publish.outputs.curseforge-url }}
           MODRINTH_URL: ${{ steps.publish.outputs.modrinth-url }}
         run: |
-          curl -o publish_maven.py https://raw.githubusercontent.com/LIUKRAST/LIUKRAST/main/util/publish_maven.py
+          curl -o publish_maven.py https://raw.githubusercontent.com/LIUKRAST/LIUKRAST/refs/heads/main/util/maven_upload.py
           python publish_maven.py

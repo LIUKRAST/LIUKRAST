@@ -1,3 +1,5 @@
+![You don't get 3 GitHub followers without making some enemies](util/motd.jpg)
+
 ![Codewars](https://www.codewars.com/users/LIUKRAST/badges/large)<br>
 
 Hi! I'm LiukRast and I make minecraft mods/texture packs!

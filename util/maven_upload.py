@@ -117,12 +117,26 @@ try:
         except FileNotFoundError:
             sftp.mkdir(current_path)
 
-    for filename in os.listdir(local_dir):
-        local_file = os.path.join(local_dir, filename)
-        remote_file = f"{remote_dir}/{filename}"
-        if os.path.isfile(local_file):
+    for root, dirs, files in os.walk(local_repo_root):
+        for file in files:
+            local_file = os.path.join(root, file)
+    
+            relative = os.path.relpath(local_file, local_repo_root)
+            remote_file = f"{remote_maven_root}/{relative}".replace("\\", "/")
+    
+            remote_folder = os.path.dirname(remote_file)
+    
+            # create remote dirs
+            current = ""
+            for folder in remote_folder.strip("/").split("/"):
+                current = f"/{folder}" if not current else f"{current}/{folder}"
+                try:
+                    sftp.stat(current)
+                except FileNotFoundError:
+                    sftp.mkdir(current)
+    
             sftp.put(local_file, remote_file)
-            print(f"Uploaded: {filename}")
+            print(f"Uploaded: {relative}")
     
     sftp.close()
 

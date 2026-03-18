@@ -3,6 +3,7 @@ import sys
 import paramiko
 import requests
 import json
+from datetime import datetime
 
 host = os.getenv('SSH_HOST')
 user = os.getenv('SSH_USER')
@@ -42,30 +43,35 @@ def discordBroadcast(maven_url):
         "content": "-# <@&1371083417336414219>",
         "embeds": [
             {
-                "description": f"**Changelog:**\n{changelog[:4096]}",
+                "title": f"{name} • v{version}",
+                "url": cf_url,
                 "color": 7049700,
+                "description": (
+                    f"**Minecraft Version:** `{mc_version}`\n\n"
+                    f"<:clipboard:1483827195662303302> **Changelog:**\n"
+                    f"{changelog[:3000]}"
+                ),
                 "fields": [
                     {
-                        "name": "<:curseforge:1467573317970952332> CurseForge",
-                        "value": f"[Download on CurseForge]({cf_url})"
+                        "name":"Download",
+                        "value": (
+                            f"<:curseforge:1467573317970952332> [CurseForge]({cf_url})\n"
+                            f"<:modrinth:1467573288321548485> [Modrinth]({os.getenv('MODRINTH_URL')})"
+                        ),
+                        "inline": True
                     },
                     {
-                        "name": "<:modrinth:1467573288321548485> Modrinth",
-                        "value": f"[Download on Modrinth]({os.getenv("MODRINTH_URL")})"
-                    },
-                    {
-                        "name": "<:maven:1467633150753505320> Maven",
-                        "value": f"[Find Maven files](https://maven.liukrast.net/{maven_url})"
+                        "name":"Developer stuff",
+                        "value": f"<:maven:1467633150753505320> [Maven](https://maven.liukrast.net/{maven_url})",
+                        "inline": True
                     }
                 ],
-                "author": {
-                    "name": f"{name} v{version} [Click to Download]",
-                    "url": cf_url,
-                    "icon_url": cf_icon
-                }
+                "footer": {
+                    "text": f"{name} • Automatic Release System"
+                },
+                "timestamp": datetime.utcnow().isoformat() + "Z"
             }
-        ],
-        "attachments": []
+        ]
     }
 
     response = requests.post(webhook, json=payload)
@@ -152,4 +158,3 @@ try:
 
 except Exception as e:
     sys.exit(f"Error: {e}")
-

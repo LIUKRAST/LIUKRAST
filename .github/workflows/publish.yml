@@ -127,6 +127,7 @@ jobs:
           MC_VERSION: ${{ steps.get_props.outputs.minecraft_version }}
           LOADER: ${{ steps.get_props.outputs.mod_loader }}
           CURSEFORGE_URL: ${{ steps.publish.outputs.curseforge-url }}
+          MAJOR_VERSION: ${{ inputs.major_release }}
           MODRINTH_URL: https://modrinth.com/mod/${{steps.publish.outputs.modrinth-id}}/version/${{steps.publish.outputs.modrinth-version}}
         run: |
           curl -o publish_maven.py https://raw.githubusercontent.com/LIUKRAST/LIUKRAST/refs/heads/main/util/maven_upload.py

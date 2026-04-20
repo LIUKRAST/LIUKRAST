@@ -8,6 +8,10 @@ on:
         default: '21'
         required: false
         type: string
+      major_release:
+        description: "Major version"
+        required: true
+        type: boolean
     secrets:
       MODRINTH_TOKEN:
         required: true

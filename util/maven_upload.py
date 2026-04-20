@@ -30,9 +30,16 @@ def discordBroadcast(maven_url):
     version = os.getenv("MOD_VERSION")
     curse_id = os.getenv("CURSE_ID")
 
+    is_major = os.getenv('MAJOR_VERSION', 'false').lower() == 'true'
+
     cf_data = get_cfwidget_data("mc-mods", curse_id)
     cf_url = os.getenv("CURSEFORGE_URL")
     cf_icon = cf_data.get("thumbnail", "")
+
+    standard_role = "<@&1495906919880327359>"
+    major_role = "<@&1371083417336414219>"
+
+    content_tag = f"-# {standard_role} {major_role}" if is_major else f"-# {standard_role}"
 
     changelog = ""
     if os.path.exists("changelog.md"):
@@ -40,7 +47,7 @@ def discordBroadcast(maven_url):
             changelog = f.read()
 
     payload = {
-        "content": "-# <@&1371083417336414219>",
+        "content": content_tag,
         "embeds": [
             {
                 "title": f"{name} • v{version}",

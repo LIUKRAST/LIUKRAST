@@ -153,7 +153,7 @@ try:
     
     sftp.close()
 
-    cmd = "cd /opt/maven_server && python3 reload.py"
+    cmd = "sudo /usr/bin/python3 /opt/maven_server/reload.py"
     _, stdout, stderr = ssh.exec_command(cmd)
     
     print(stdout.read().decode().strip())

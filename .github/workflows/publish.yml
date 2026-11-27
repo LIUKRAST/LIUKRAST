@@ -68,6 +68,17 @@ jobs:
           echo "modrinth_id=$MODRINTH_ID" >> $GITHUB_OUTPUT
           echo "java_version=$JAVA_VERSION" >> $GITHUB_OUTPUT
 
+          # Dependencies shown on CurseForge/Modrinth, from gradle.properties:
+          #   publish_dependencies=id(type){modrinth:ID}{curseforge:slug}, ...
+          # (mc-publish can't read NeoForge's type="required" in neoforge.mods.toml)
+          DEPS=$(prop 'publish_dependencies' | tr ',' '\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v '^$' || true)
+          echo "Dependencies:"; echo "${DEPS:-  (none declared, mc-publish falls back to the metadata file)}"
+          {
+            echo "dependencies<<EOF_DEPS"
+            echo "$DEPS"
+            echo "EOF_DEPS"
+          } >> $GITHUB_OUTPUT
+
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
@@ -94,6 +105,7 @@ jobs:
           # Dynamic values from gradle.properties
           loaders: ${{ steps.get_props.outputs.mod_loader }}
           game-versions: ${{ steps.get_props.outputs.minecraft_version }}
+          dependencies: ${{ steps.get_props.outputs.dependencies }}
           
           # Specifies which files to upload. Assumes your built jar is in build/libs
           # and doesn't contain "-dev", "-sources", or "-javadoc".

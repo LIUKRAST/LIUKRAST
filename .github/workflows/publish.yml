@@ -22,7 +22,9 @@ on:
       SSH_USER:
         required: true
       SSH_PASS:
-        required: true
+        required: false
+      SSH_KEY:
+        required: false
       DISCORD_WEBHOOK:
         required: true
 
@@ -118,6 +120,7 @@ jobs:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_PASS: ${{ secrets.SSH_PASS }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           MOD_NAME: ${{ steps.get_props.outputs.name }}
           MOD_VERSION: ${{ steps.get_props.outputs.version }}

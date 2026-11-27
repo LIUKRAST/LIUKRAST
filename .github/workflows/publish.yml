@@ -12,6 +12,11 @@ on:
         description: "Major version"
         required: true
         type: boolean
+      ssh_user:
+        description: "SSH user on the maven server"
+        default: 'liukrast'
+        required: false
+        type: string
     secrets:
       MODRINTH_TOKEN:
         required: true
@@ -19,12 +24,8 @@ on:
         required: true
       SSH_HOST:
         required: true
-      SSH_USER:
-        required: true
-      SSH_PASS:
-        required: false
       SSH_KEY:
-        required: false
+        required: true
       DISCORD_WEBHOOK:
         required: true
 
@@ -118,8 +119,7 @@ jobs:
       - name: SSH and Upload Maven
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_PASS: ${{ secrets.SSH_PASS }}
+          SSH_USER: ${{ inputs.ssh_user }}
           SSH_KEY: ${{ secrets.SSH_KEY }}
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           MOD_NAME: ${{ steps.get_props.outputs.name }}

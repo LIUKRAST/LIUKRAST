@@ -11,9 +11,8 @@ import json
 from datetime import datetime
 
 host = os.getenv('SSH_HOST')
-user = os.getenv('SSH_USER')
-password = os.getenv('SSH_PASS')
-private_key = os.getenv('SSH_KEY')
+user = os.getenv('SSH_USER') or 'liukrast'
+private_key = os.getenv('SSH_KEY')  # password login is disabled on the server
 
 METADATA_FILE = "maven-metadata.xml"
 CHECKSUMS = ("md5", "sha1", "sha256", "sha512")
@@ -107,10 +106,7 @@ def load_private_key(text):
 def connect():
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    if private_key:
-        client.connect(host, username=user, pkey=load_private_key(private_key), look_for_keys=False, allow_agent=False)
-    else:
-        client.connect(host, username=user, password=password, look_for_keys=False, allow_agent=False)
+    client.connect(host, username=user, pkey=load_private_key(private_key), look_for_keys=False, allow_agent=False)
     return client
 
 
@@ -172,8 +168,8 @@ def is_metadata_file(name):
     return name == METADATA_FILE or any(name == f"{METADATA_FILE}.{algorithm}" for algorithm in CHECKSUMS)
 
 
-if not host or not user or not (private_key or password):
-    sys.exit("Missing required environment variables: SSH_HOST, SSH_USER and SSH_KEY or SSH_PASS.")
+if not host or not private_key:
+    sys.exit("Missing required environment variables: SSH_HOST and SSH_KEY.")
 
 props = {}
 try:
@@ -241,7 +237,7 @@ try:
 
     sftp.close()
 
-    cmd = "/usr/local/bin/maven-reload || sudo -n /usr/bin/python3 /opt/maven_server/reload.py"
+    cmd = "/usr/local/bin/maven-reload"
     _, stdout, stderr = ssh.exec_command(cmd)
 
     print(stdout.read().decode().strip())

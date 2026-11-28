@@ -32,6 +32,11 @@ def get_cfwidget_data(path, mod_id):
         print(f"⚠️ CFWidget error: {e}")
     return {}
 
+def role_mention(env_name, default_id):
+    role = (os.getenv(env_name) or "").strip() or default_id
+    return "" if role.lower() == "none" else f"<@&{role}>"
+
+
 def discordBroadcast(maven_url):
     webhook = os.getenv("DISCORD_WEBHOOK")
     name = os.getenv("MOD_NAME")
@@ -44,10 +49,12 @@ def discordBroadcast(maven_url):
     cf_url = os.getenv("CURSEFORGE_URL")
     cf_icon = cf_data.get("thumbnail", "")
 
-    standard_role = "<@&1495906919880327359>"
-    major_role = "<@&1371083417336414219>"
-
-    content_tag = f"-# {standard_role} {major_role}" if is_major else f"-# {standard_role}"
+    # Role IDs to ping; empty = liukrast's Discord roles, "none" = no ping
+    roles = [role_mention("DISCORD_ROLE", "1495906919880327359")]
+    if is_major:
+        roles.append(role_mention("DISCORD_MAJOR_ROLE", "1371083417336414219"))
+    roles = [r for r in roles if r]
+    content_tag = f"-# {' '.join(roles)}" if roles else ""
 
     changelog = ""
     if os.path.exists("changelog.md"):

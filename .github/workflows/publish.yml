@@ -13,7 +13,7 @@ on:
         required: true
         type: boolean
       ssh_user:
-        description: "SSH user on the maven server"
+        description: "SSH user on the maven server, used when the SSH_USER secret is not set"
         default: 'liukrast'
         required: false
         type: string
@@ -28,6 +28,13 @@ on:
         required: true
       DISCORD_WEBHOOK:
         required: true
+      # Set by ci-secrets on the VPS: the member who publishes, and the Discord roles they ping
+      SSH_USER:
+        required: false
+      DISCORD_ROLE:
+        required: false
+      DISCORD_MAJOR_ROLE:
+        required: false
 
 jobs:
   build-and-deploy:
@@ -131,9 +138,11 @@ jobs:
       - name: SSH and Upload Maven
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_USER: ${{ inputs.ssh_user }}
+          SSH_USER: ${{ secrets.SSH_USER || inputs.ssh_user }}
           SSH_KEY: ${{ secrets.SSH_KEY }}
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_ROLE: ${{ secrets.DISCORD_ROLE }}
+          DISCORD_MAJOR_ROLE: ${{ secrets.DISCORD_MAJOR_ROLE }}
           MOD_NAME: ${{ steps.get_props.outputs.name }}
           MOD_VERSION: ${{ steps.get_props.outputs.version }}
           CURSE_ID: ${{ steps.get_props.outputs.curse_id }}
